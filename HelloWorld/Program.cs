@@ -43,8 +43,10 @@ namespace HelloWorld
             //var atest = new TestClass();
             TestClass.GenObj();
 
-            var enumtest = new EnumTest();
-            enumtest.Main();
+            //var enumtest = new EnumTest();
+            //enumtest.Main();
+
+            Symbol.wenhao();
         }
     }
 }
