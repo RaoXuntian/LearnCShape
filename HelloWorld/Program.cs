@@ -47,6 +47,9 @@ namespace HelloWorld
             //enumtest.Main();
 
             Symbol.wenhao();
+
+
+            Console.ReadLine();
         }
     }
 }
