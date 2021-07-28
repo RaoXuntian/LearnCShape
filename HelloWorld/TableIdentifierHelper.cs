@@ -79,18 +79,18 @@ namespace HelloWorld
             return items.ToArray();
         }
 
-        public static string[] SplitIdentifierForSqlUnquoted(string tableName)
-        {
-            var arr = SplitIdentifierForSql(tableName);
-            if (arr != null && arr.Length >= 1)
-            {
-                using (var sqlCommandBuilder = new SqlCommandBuilder())
-                {
-                    return arr.Select(s => sqlCommandBuilder.UnquoteIdentifier(s)).ToArray();
-                }
-            }
-            return null;
-        }
+        //public static string[] SplitIdentifierForSqlUnquoted(string tableName)
+        //{
+        //    var arr = SplitIdentifierForSql(tableName);
+        //    if (arr != null && arr.Length >= 1)
+        //    {
+        //        using (var sqlCommandBuilder = new SqlCommandBuilder())
+        //        {
+        //            return arr.Select(s => sqlCommandBuilder.UnquoteIdentifier(s)).ToArray();
+        //        }
+        //    }
+        //    return null;
+        //}
 
         #endregion
 
@@ -106,18 +106,20 @@ namespace HelloWorld
         {
             try
             {
-                return SplitIdentifierWithSingleQuote(tableName, DoubleQuotation);
+                return SplitIdentifierWithSingleQuote(tableName, DoubleQuotation, true);
             }
-            catch (ArgumentException)
+            catch (ArgumentException e)
             {
+                Console.WriteLine(e);
                 return null;
+                //throw new ArgumentNullException("name");
                 //throw new HybridDeliveryException(string.Format(CultureInfo.CurrentCulture, Resources.UserErrorInvalidOracleIdentifier, tableName),
                 //                                  HybridDeliveryExceptionCode.UserErrorFailedToParseOracleIdentifier);
             }
         }
 
         #endregion
-        private static string[] SplitIdentifierWithSingleQuote(string name, char quote)
+        private static string[] SplitIdentifierWithSingleQuote(string name, char quote, bool transferToUpperWithoutQuote = false)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -127,6 +129,7 @@ namespace HelloWorld
             List<string> items = new List<string>();
             bool waitingForClosedQutation = false;
             bool invalidIdentifierDetected = false;
+            //bool itemContainQuote = false;
             int startIndex = 0;
             int length = 0;
             int i = 0;
@@ -179,7 +182,8 @@ namespace HelloWorld
                         {
                             if (length > 0)
                             {
-                                items.Add(name.Substring(startIndex, length));
+                                string item = transferToUpperWithoutQuote ? name.Substring(startIndex, length).ToUpper() : name.Substring(startIndex, length);
+                                items.Add(item);
                             }
                             else
                             {
@@ -207,7 +211,8 @@ namespace HelloWorld
 
             if (startIndex != name.Length && length > 0)
             {
-                items.Add(name.Substring(startIndex, length));
+                string item = transferToUpperWithoutQuote ? name.Substring(startIndex, length).ToUpper() : name.Substring(startIndex, length);
+                items.Add(item);
             }
 
             return items.ToArray();

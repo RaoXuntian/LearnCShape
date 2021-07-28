@@ -48,6 +48,31 @@ namespace HelloWorld
 
             Symbol.wenhao();
 
+            Console.Write("Input tablename: ");
+            string tablename = Console.ReadLine();
+
+            while(!string.IsNullOrWhiteSpace(tablename))
+            {
+                //var tablelist = TableIdentifierHelper.SplitIdentifier(tablename);
+                var tablelist = TableIdentifierHelper.SplitIdentifierForOracle(tablename);
+                if (tablelist != null)
+                {
+                    string schema = string.Join(".", tablelist, 0, tablelist.Length - 1);
+                    string table = tablelist[tablelist.Length - 1];
+                    Console.WriteLine($"schema:\t{schema}\ntable:\t{table}");
+                    //foreach (var item in tablelist)
+                    //{
+                    //    Console.WriteLine(item);
+                    //}
+                }
+                else
+                {
+                    Console.WriteLine("input ERROR!!!");
+                }
+                Console.Write("Input tablename again: ");
+                tablename = Console.ReadLine();
+            }
+
 
             Console.ReadLine();
         }
