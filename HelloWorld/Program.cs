@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace HelloWorld
 {
-    class Program
+    public class Program
     {
         public static void ArrayPrint()
         {
