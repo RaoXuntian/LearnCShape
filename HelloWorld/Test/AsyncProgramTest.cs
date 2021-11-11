@@ -18,7 +18,22 @@ namespace HelloWorld.Test
 
         public static async void Excute()
         {
+            Task t1 = new Task(() => {
+                Console.WriteLine(Thread.CurrentThread.GetHashCode() + " task1 Start" + DateTime.Now);
+                Thread.Sleep(10000);
+                Console.WriteLine(Thread.CurrentThread.GetHashCode() + " task1 End" + DateTime.Now);
+            });
+            Task t2 = new Task(() => {
+                Console.WriteLine(Thread.CurrentThread.GetHashCode() + " task2 Start" + DateTime.Now);
+                Thread.Sleep(8000);
+                Console.WriteLine(Thread.CurrentThread.GetHashCode() + " task2 End" + DateTime.Now);
+            });
+            t1.Start();
+            t2.Start();
+            t1.Wait();
+            t2.Wait();
             Console.WriteLine(Thread.CurrentThread.GetHashCode() + " Start Excute " + DateTime.Now);
+            //await AsyncTest();
             await SingleAwait();
             await SingleNoAwait();
             //var waitTask = AsyncTestRun();
@@ -33,7 +48,12 @@ namespace HelloWorld.Test
             Task.Run(() =>
             {
                 Console.WriteLine(Thread.CurrentThread.GetHashCode() + " Run1 " + DateTime.Now);
-                Thread.Sleep(1000);
+                Thread.Sleep(6000);
+            }).GetAwaiter().GetResult();
+            Task.Run(() =>
+            {
+                Console.WriteLine(Thread.CurrentThread.GetHashCode() + " Run2 " + DateTime.Now);
+                Thread.Sleep(4000);
             }).GetAwaiter().GetResult();
             return 1;
         }
@@ -54,12 +74,12 @@ namespace HelloWorld.Test
             await Task.Run(() =>
             {
                 Console.WriteLine(Thread.CurrentThread.GetHashCode() + " Run1 " + DateTime.Now);
-                Thread.Sleep(1000);
+                Thread.Sleep(8000);
             });
             await Task.Run(() =>
             {
                 Console.WriteLine(Thread.CurrentThread.GetHashCode() + " Run2 " + DateTime.Now);
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
             });
             Console.WriteLine(Thread.CurrentThread.GetHashCode() + " AwaitTest end " + DateTime.Now);
             return;
@@ -71,12 +91,12 @@ namespace HelloWorld.Test
             Task.Run(() =>
             {
                 Console.WriteLine(Thread.CurrentThread.GetHashCode() + " Run1 " + DateTime.Now);
-                Thread.Sleep(1000);
+                Thread.Sleep(5000);
             }).GetAwaiter().GetResult();
             Task.Run(() =>
             {
                 Console.WriteLine(Thread.CurrentThread.GetHashCode() + " Run2 " + DateTime.Now);
-                Thread.Sleep(1000);
+                Thread.Sleep(8000);
             }).GetAwaiter().GetResult();
             Console.WriteLine(Thread.CurrentThread.GetHashCode() + " SingleNoAwait End " + DateTime.Now);
             return;
