@@ -47,6 +47,9 @@ namespace HelloWorld
             }
         }
 
+        public static string bug = null;
+        public string code => bug = bug ?? new String("Sixxxx");
+
         static void Main(string[] args)
         {
             //var str = "Welcome to Microsoft!";
@@ -76,8 +79,9 @@ namespace HelloWorld
 
             //Symbol.wenhao();
 
-            AsyncProgramTest.Excute();
+            //AsyncProgramTest.Excute();
 
+            Console.WriteLine(Program.bug);
 
             Console.ReadLine();
         }
