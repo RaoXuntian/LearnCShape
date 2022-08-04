@@ -50,8 +50,8 @@ namespace HelloWorld
         public static string bug = null;
         public string code => bug = bug ?? new String("Sixxxx");
 
-        static void Main(string[] args)
-        {
+        //static void Main(string[] args)
+        //{
             //var str = "Welcome to Microsoft!";
 
             //Console.WriteLine("Please input your name:");
@@ -81,9 +81,9 @@ namespace HelloWorld
 
             //AsyncProgramTest.Excute();
 
-            Console.WriteLine(Program.bug);
+        //    Console.WriteLine(Program.bug);
 
-            Console.ReadLine();
-        }
+        //    Console.ReadLine();
+        //}
     }
 }
