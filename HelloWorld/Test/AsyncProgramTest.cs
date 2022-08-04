@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace HelloWorld.Test
 {
+    [TestClass]
     public class AsyncProgramTest
     {
         //public static int NoAsyncTest()
@@ -16,7 +18,13 @@ namespace HelloWorld.Test
         //    return 1;
         //}
 
-        public static async void Excute()
+        [TestMethod(), Owner("XuntianRao")]
+        public void Test()
+        {
+            Excute();
+        }
+
+        public async void Excute()
         {
             Task t1 = new Task(() => {
                 Console.WriteLine(Thread.CurrentThread.GetHashCode() + " task1 Start" + DateTime.Now);
