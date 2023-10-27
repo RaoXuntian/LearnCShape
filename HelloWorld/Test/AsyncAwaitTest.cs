@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -85,6 +86,67 @@ namespace HelloWorld.Test
                     Thread.Sleep(5000);
                 }).ConfigureAwait(false);
             }
+        }
+
+        [TestMethod(), Owner("XuntianRao")]
+        public void TestTaskWhenAny()
+        {
+            Assert.AreEqual(AsyncTestTaskWhenAny().ConfigureAwait(false).GetAwaiter().GetResult(), 1);
+        }
+
+        public async Task<int> AsyncTestTaskWhenAny()
+        {
+            var timeout = TimeSpan.FromSeconds(5);
+            Task task = Task.Run(() => { 
+                Console.WriteLine(Thread.CurrentThread.GetHashCode() + " Run1 " + DateTime.Now);
+                Thread.Sleep(2000);
+                throw new Exception("Mock an exp");
+            });
+
+            //if (!task.Wait(timeout))
+            if (await Task.WhenAny(task, Task.Delay(timeout)).ConfigureAwait(false) != task)
+            {
+                Console.WriteLine("timeout!");
+            }
+
+            await task.ConfigureAwait(false);
+
+            return 1;
+        }
+
+        [TestMethod(), Owner("XuntianRao")]
+        public async Task TestWhenAllAsync()
+        {
+            var taskNames = new List<string> { "T1", "T2", "T3", "T4", "T5" };
+
+            var tasks = taskNames.Select(name => MainTask(name)).ToList();
+
+            foreach (var task in tasks)
+            {
+                await task;
+            }
+        }
+
+        private async Task MainTask(string taskName)
+        {
+            Console.WriteLine($"[{taskName}] MainTask Start {DateTime.Now}");
+
+            await SubTask(10);
+            Console.WriteLine($"[{taskName}] SubTask1 End {DateTime.Now}");
+            
+
+            await SubTask(5);
+            Console.WriteLine($"[{taskName}] SubTask2 End {DateTime.Now}");
+
+            await SubTask(2);
+            Console.WriteLine($"[{taskName}] SubTask3 End {DateTime.Now}");
+
+            Console.WriteLine($"[{taskName}] MainTask End {DateTime.Now}");
+        }
+
+        private async Task SubTask(int sleepSeconds)
+        {
+            await Task.Delay(sleepSeconds * 1000);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
+using System.Reflection.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,25 +23,48 @@ namespace HelloWorld.Test
         [TestMethod(), Owner("XuntianRao")]
         public void Test()
         {
-            Excute();
+            Console.WriteLine("Hello");
+            Excute().ConfigureAwait(false).GetAwaiter().GetResult();
+            Console.WriteLine("World!!!");
         }
 
-        public async void Excute()
+        public async Task Excute()
         {
             Task t1 = new Task(() => {
                 Console.WriteLine(Thread.CurrentThread.GetHashCode() + " task1 Start" + DateTime.Now);
                 Thread.Sleep(10000);
                 Console.WriteLine(Thread.CurrentThread.GetHashCode() + " task1 End" + DateTime.Now);
             });
-            Task t2 = new Task(() => {
+            Task t2 = Task.Run(() => {
                 Console.WriteLine(Thread.CurrentThread.GetHashCode() + " task2 Start" + DateTime.Now);
                 Thread.Sleep(8000);
                 Console.WriteLine(Thread.CurrentThread.GetHashCode() + " task2 End" + DateTime.Now);
             });
-            t1.Start();
-            t2.Start();
-            t1.Wait();
-            t2.Wait();
+
+            Task t3 = Task.Run(async () =>
+            {
+                await t2.ConfigureAwait(false);
+            });
+
+            //t1.Start();
+            //t2.Start();
+            if (await Task.WhenAny(t2, Task.Delay(TimeSpan.FromSeconds(50))).ConfigureAwait(false) != t2)
+            {
+                Console.WriteLine(Thread.CurrentThread.GetHashCode() + " 55555555  " + DateTime.Now);
+                //throw new TimeoutException();
+            }
+
+            /*if (!Task.WaitAll(new List<Task>() { t1, t2 }.ToArray(), TimeSpan.FromSeconds(9)))
+            {
+                Console.WriteLine(Thread.CurrentThread.GetHashCode() + " 55555555  " + DateTime.Now);
+                //throw new Exception();
+            }*/
+
+
+            /*t1.Wait();
+            t2.Wait();*/
+
+            /*
             Console.WriteLine(Thread.CurrentThread.GetHashCode() + " Start Excute " + DateTime.Now);
             //await AsyncTest();
             await SingleAwait();
@@ -49,6 +74,7 @@ namespace HelloWorld.Test
             //int i = await waitTask;
             //Console.WriteLine(Thread.CurrentThread.GetHashCode() + " i " + i);
             Console.WriteLine(Thread.CurrentThread.GetHashCode() + " End Excute " + DateTime.Now);
+            */
         }
 
         public static async Task<int> AsyncTest()
