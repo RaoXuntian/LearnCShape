@@ -14,7 +14,7 @@ namespace HelloWorld
     }
     public class EnumTest
     {
-        public void Main()
+        public void Run()
         {
             int x = (int)Day.Sun;
             int y = (int)Day.Fri;
